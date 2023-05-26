@@ -1,0 +1,35 @@
+version: '3.1'
+services:
+  crawler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    links:
+      - mongo
+      - redis
+      - elasticsearch
+    volumes:
+      - ./volume/crawler-logs:/server/logs/
+    environment:
+      - NUM_CONCURRENT=50
+      - LOGGING_LEVEL=30
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
+    container_name: elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+~                                                                                                                                                                      ~                                                                                                                                                                      ~                                                                                                                                                                      ~                                                                                                                                                                      ~                                                                                                                                                                      ~                                                                                                                                                                      ~                                                                                                                                                                      ~                                                                                
